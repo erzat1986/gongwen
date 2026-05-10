@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-公文排版脚本 - 自动按照国家标准公文格式规范对Word文档进行排版
-支持方正小标宋GBK大标题、黑体一级标题、楷体二级标题、仿宋_GB2312正文
-
+公文排版脚本 - 根据国有资产AI盘活平台项目的正确格式进行修改
 作者: Claude Code
-版本: v1.0.0
+版本: v1.1.0 (修复版本)
 日期: 2024-05-10
 """
 
@@ -22,15 +20,6 @@ def set_chinese_font(run, font_name, size_pt, bold=False, italic=False):
     """设置中文字体"""
     run.font.name = font_name
     run._element.rPr.rFonts.set(qn('w:eastAsia'), font_name)
-    run.font.size = Pt(size_pt)
-    run.font.bold = bold
-    run.font.italic = italic
-
-def set_english_font(run, size_pt, bold=False, italic=False):
-    """设置英文字体为Times New Roman"""
-    run.font.name = 'Times New Roman'
-    run._element.rPr.rFonts.set(qn('w:ascii'), 'Times New Roman')
-    run._element.rPr.rFonts.set(qn('w:hAnsi'), 'Times New Roman')
     run.font.size = Pt(size_pt)
     run.font.bold = bold
     run.font.italic = italic
@@ -69,35 +58,35 @@ def process_paragraph(para):
             para.paragraph_format.line_spacing = Pt(35)
             para.paragraph_format.first_line_indent = Cm(0)
             for run in para.runs:
-                set_chinese_font(run, '方正小标宋_GBK', 22)
+                set_chinese_font(run, '方正小标宋_GBK', 22, bold=False)  # 大标题不加粗！！！
     elif is_level1_title(text):
         para.add_run(text)
-        para.paragraph_format.first_line_indent = Cm(0.66)
+        para.paragraph_format.first_line_indent = Cm(1.13)  # 修复缩进！！！
         para.paragraph_format.line_spacing = Pt(28)
         for run in para.runs:
             set_chinese_font(run, '黑体', 16, bold=True)
     elif is_level2_title(text):
         para.add_run(text)
-        para.paragraph_format.first_line_indent = Cm(0.66)
+        para.paragraph_format.first_line_indent = Cm(1.13)  # 修复缩进！！！
         para.paragraph_format.line_spacing = Pt(28)
         for run in para.runs:
             set_chinese_font(run, '楷体_GB2312', 16, bold=True)
     elif is_level3_title(text):
         para.add_run(text)
-        para.paragraph_format.first_line_indent = Cm(0.66)
+        para.paragraph_format.first_line_indent = Cm(1.13)  # 修复缩进！！！
         para.paragraph_format.line_spacing = Pt(28)
         for run in para.runs:
             set_chinese_font(run, '仿宋_GB2312', 16, bold=True)
     elif is_level4_title(text):
         para.add_run(text)
-        para.paragraph_format.first_line_indent = Cm(0.66)
+        para.paragraph_format.first_line_indent = Cm(1.13)  # 修复缩进！！！
         para.paragraph_format.line_spacing = Pt(28)
         for run in para.runs:
             set_chinese_font(run, '仿宋_GB2312', 16, bold=True)
     else:
-        para.paragraph_format.first_line_indent = Cm(0.66)
+        para.paragraph_format.first_line_indent = Cm(1.13)  # 修复缩进！！！
         para.paragraph_format.line_spacing = Pt(28)
-        para.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        para.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT  # 修复对齐！！！
 
         if text:
             run = para.add_run(text)
@@ -148,7 +137,7 @@ def format_document(input_path, output_path):
     return backup_path
 
 def main():
-    parser = argparse.ArgumentParser(description="公文排版脚本 - 自动按照国家标准公文格式规范对Word文档进行排版")
+    parser = argparse.ArgumentParser(description="公文排版脚本 - 根据国有资产AI盘活平台项目格式进行优化")
     parser.add_argument("input_file", help="输入的Word文档路径 (.docx)")
     parser.add_argument("-o", "--output", help="输出文件路径")
 
